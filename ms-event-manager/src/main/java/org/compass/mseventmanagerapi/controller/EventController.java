@@ -11,36 +11,42 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/events")
+@RequestMapping
 @RequiredArgsConstructor
 public class EventController {
     private final EventService eventService;
 
-    @PostMapping
+    @PostMapping("/create-event")
     public ResponseEntity<EventResponseDto> createEvent(@RequestBody Event event) {
         EventResponseDto createdEvent = eventService.createEvent(event);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/get-event/{id}")
     public ResponseEntity<EventResponseDto> getEventById(@PathVariable String id) {
         EventResponseDto event = eventService.getEventById(id);
         return ResponseEntity.ok(event);
     }
 
-    @GetMapping
+    @GetMapping("/get-all-events")
     public ResponseEntity<List<EventResponseDto>> getAllEvents() {
         List<EventResponseDto> events = eventService.getAllEvents();
         return ResponseEntity.ok(events);
     }
 
-    @PutMapping("/{id}")
+    @GetMapping("/get-all-events/sorted")
+    public ResponseEntity<List<EventResponseDto>> getAllEventsSorted() {
+        List<EventResponseDto> events = eventService.getAllEventsSorted();
+        return ResponseEntity.ok(events);
+    }
+
+    @PutMapping("/update-event/{id}")
     public ResponseEntity<EventResponseDto> updateEvent(@PathVariable String id, @RequestBody Event event) {
         EventResponseDto updatedEvent = eventService.updateEvent(id, event);
         return ResponseEntity.ok(updatedEvent);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete-event/{id}")
     public ResponseEntity<Void> deleteEvent(@PathVariable String id) {
         eventService.deleteEvent(id);
         return ResponseEntity.noContent().build();
