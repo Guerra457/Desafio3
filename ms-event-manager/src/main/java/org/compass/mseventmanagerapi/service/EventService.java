@@ -42,26 +42,28 @@ public class EventService {
                 .collect(Collectors.toList());
     }
 
+    public List<EventResponseDto> getAllEventsSorted() {
+        return eventRepository.findAllByOrderByEventNameAsc().stream()
+                .map(this::mapToEventResponseDto)
+                .collect(Collectors.toList());
+    }
+
     public EventResponseDto updateEvent(String id, Event updatedEvent) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new EventNotFoundException("Evento não encontrado!"));
 
-        // Atualiza os campos do evento
         event.setEventName(updatedEvent.getEventName());
         event.setDateTime(updatedEvent.getDateTime());
         event.setCep(updatedEvent.getCep());
 
-        // Busca os novos detalhes do endereço com base no CEP atualizado
         AddressResponseDto address = addressService.getAddress(updatedEvent.getCep());
         event.setLogradouro(address.getLogradouro());
         event.setBairro(address.getBairro());
         event.setCidade(address.getLocalidade());
         event.setUf(address.getUf());
 
-        // Salva o evento atualizado
         Event savedEvent = eventRepository.save(event);
 
-        // Converte a entidade Event para EventResponseDto
         return mapToEventResponseDto(savedEvent);
     }
 
