@@ -28,6 +28,9 @@ public class AddressController {
     @GetMapping("/{cep}")
     public ResponseEntity<AddressResponseDto> getAddress(@PathVariable String cep) {
         AddressResponseDto address = addressService.getAddress(cep);
+        if (address == null) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.ok(address);
     }
 }
