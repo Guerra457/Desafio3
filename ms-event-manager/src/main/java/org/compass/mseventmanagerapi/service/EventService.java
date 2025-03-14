@@ -8,6 +8,7 @@ import org.compass.mseventmanagerapi.exception.EventNotFoundException;
 import org.compass.mseventmanagerapi.repository.EventRepository;
 import org.compass.mseventmanagerapi.web.dto.AddressResponseDto;
 import org.compass.mseventmanagerapi.web.dto.CheckTicketsResponse;
+import org.compass.mseventmanagerapi.web.dto.EventRequestDto;
 import org.compass.mseventmanagerapi.web.dto.EventResponseDto;
 import org.springframework.stereotype.Service;
 
@@ -21,13 +22,18 @@ public class EventService {
     private final AddressService addressService;
     private final TicketClient ticketClient;
 
-    public EventResponseDto createEvent(Event event) {
-        AddressResponseDto address = addressService.getAddress(event.getCep());
+    public EventResponseDto createEvent(EventRequestDto eventRequest) {
+        AddressResponseDto address = addressService.getAddress(eventRequest.getCep());
 
-        event.setLogradouro(address.getLogradouro());
-        event.setBairro(address.getBairro());
-        event.setCidade(address.getLocalidade());
-        event.setUf(address.getUf());
+        Event event = Event.builder()
+                .eventName(eventRequest.getEventName())
+                .dateTime(eventRequest.getDateTime())
+                .cep(eventRequest.getCep())
+                .logradouro(address.getLogradouro())
+                .bairro(address.getBairro())
+                .cidade(address.getLocalidade())
+                .uf(address.getUf())
+                .build();
 
         Event savedEvent = eventRepository.save(event);
 
@@ -52,7 +58,7 @@ public class EventService {
                 .collect(Collectors.toList());
     }
 
-    public EventResponseDto updateEvent(String id, Event updatedEvent) {
+    public EventResponseDto updateEvent(String id, EventRequestDto updatedEvent) {
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new EventNotFoundException("Evento não encontrado!"));
 

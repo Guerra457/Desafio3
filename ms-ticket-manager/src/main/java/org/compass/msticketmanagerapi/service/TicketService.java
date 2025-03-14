@@ -9,6 +9,7 @@ import org.compass.msticketmanagerapi.repository.TicketRepository;
 import org.compass.msticketmanagerapi.web.dto.EventDetailsDto;
 import org.compass.msticketmanagerapi.web.dto.TicketRequestDto;
 import org.compass.msticketmanagerapi.web.dto.TicketResponseDto;
+import org.compass.msticketmanagerapi.web.dto.TicketUpdateRequestDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,7 +50,7 @@ public class TicketService {
         return mapToTicketResponseDto(ticket, eventDetails);
     }
 
-    public TicketResponseDto updateTicket(String id, TicketRequestDto ticketRequest) {
+    public TicketResponseDto updateTicket(String id, TicketUpdateRequestDto ticketRequest) {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new TicketNotFoundException("Ingresso não encontrado!"));
 

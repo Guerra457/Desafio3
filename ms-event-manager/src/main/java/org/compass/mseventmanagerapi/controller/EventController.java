@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.compass.mseventmanagerapi.entity.Event;
 import org.compass.mseventmanagerapi.exception.EventHasTicketsException;
 import org.compass.mseventmanagerapi.service.EventService;
+import org.compass.mseventmanagerapi.web.dto.EventRequestDto;
 import org.compass.mseventmanagerapi.web.dto.EventResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +19,8 @@ public class EventController {
     private final EventService eventService;
 
     @PostMapping("/create-event")
-    public ResponseEntity<EventResponseDto> createEvent(@RequestBody Event event) {
-        EventResponseDto createdEvent = eventService.createEvent(event);
+    public ResponseEntity<EventResponseDto> createEvent(@RequestBody EventRequestDto eventRequest) {
+        EventResponseDto createdEvent = eventService.createEvent(eventRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
     }
 
@@ -42,8 +43,8 @@ public class EventController {
     }
 
     @PutMapping("/update-event/{id}")
-    public ResponseEntity<EventResponseDto> updateEvent(@PathVariable String id, @RequestBody Event event) {
-        EventResponseDto updatedEvent = eventService.updateEvent(id, event);
+    public ResponseEntity<EventResponseDto> updateEvent(@PathVariable String id, @RequestBody EventRequestDto eventRequest) {
+        EventResponseDto updatedEvent = eventService.updateEvent(id, eventRequest);
         return ResponseEntity.ok(updatedEvent);
     }
 
