@@ -2,13 +2,12 @@ package org.compass.msticketmanagerapi.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.compass.msticketmanagerapi.service.TicketService;
-import org.compass.msticketmanagerapi.web.dto.TicketResponseDto;
+import org.compass.msticketmanagerapi.web.dto.CheckTicketsResponse;
 import org.compass.msticketmanagerapi.web.dto.TicketRequestDto;
+import org.compass.msticketmanagerapi.web.dto.TicketResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping
@@ -41,8 +40,8 @@ public class TicketController {
     }
 
     @GetMapping("/check-tickets-by-event/{eventId}")
-    public ResponseEntity<List<TicketResponseDto>> getTicketsByEventId(@PathVariable String eventId) {
-        List<TicketResponseDto> tickets = ticketService.getTicketsByEventId(eventId);
-        return ResponseEntity.ok(tickets);
+    public ResponseEntity<CheckTicketsResponse> checkTicketsByEvent(@PathVariable String eventId) {
+        boolean hasTickets = ticketService.hasTicketsForEvent(eventId);
+        return ResponseEntity.ok(new CheckTicketsResponse(eventId, hasTickets));
     }
 }

@@ -73,14 +73,8 @@ public class TicketService {
         ticketRepository.save(ticket);
     }
 
-    public List<TicketResponseDto> getTicketsByEventId(String eventId) {
-        List<Ticket> tickets = ticketRepository.findByEventId(eventId);
-        return tickets.stream()
-                .map(ticket -> {
-                    EventDetailsDto eventDetails = eventClient.getEventDetails(ticket.getEventId());
-                    return mapToTicketResponseDto(ticket, eventDetails);
-                })
-                .collect(Collectors.toList());
+    public boolean hasTicketsForEvent(String eventId) {
+        return ticketRepository.existsByEventId(eventId);
     }
 
     private TicketResponseDto mapToTicketResponseDto(Ticket ticket, EventDetailsDto eventDetails) {

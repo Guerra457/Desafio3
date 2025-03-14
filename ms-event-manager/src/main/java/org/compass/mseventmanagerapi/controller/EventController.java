@@ -2,6 +2,7 @@ package org.compass.mseventmanagerapi.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.compass.mseventmanagerapi.entity.Event;
+import org.compass.mseventmanagerapi.exception.EventHasTicketsException;
 import org.compass.mseventmanagerapi.service.EventService;
 import org.compass.mseventmanagerapi.web.dto.EventResponseDto;
 import org.springframework.http.HttpStatus;
@@ -47,8 +48,13 @@ public class EventController {
     }
 
     @DeleteMapping("/delete-event/{id}")
-    public ResponseEntity<Void> deleteEvent(@PathVariable String id) {
-        eventService.deleteEvent(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteEvent(@PathVariable String id) {
+        try {
+            eventService.deleteEvent(id);
+            return ResponseEntity.noContent().build();
+        } catch (EventHasTicketsException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("{\"error\": \"O evento não pode ser deletado porque possui ingressos vendidos.\"}");
+        }
     }
 }
