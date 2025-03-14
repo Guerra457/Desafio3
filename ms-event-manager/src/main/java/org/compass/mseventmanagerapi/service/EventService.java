@@ -1,10 +1,13 @@
 package org.compass.mseventmanagerapi.service;
 
 import lombok.RequiredArgsConstructor;
+import org.compass.mseventmanagerapi.client.TicketClient;
 import org.compass.mseventmanagerapi.entity.Event;
+import org.compass.mseventmanagerapi.exception.EventHasTicketsException;
 import org.compass.mseventmanagerapi.exception.EventNotFoundException;
 import org.compass.mseventmanagerapi.repository.EventRepository;
 import org.compass.mseventmanagerapi.web.dto.AddressResponseDto;
+import org.compass.mseventmanagerapi.web.dto.CheckTicketsResponse;
 import org.compass.mseventmanagerapi.web.dto.EventResponseDto;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,7 @@ import java.util.stream.Collectors;
 public class EventService {
     private final EventRepository eventRepository;
     private final AddressService addressService;
+    private final TicketClient ticketClient;
 
     public EventResponseDto createEvent(Event event) {
         AddressResponseDto address = addressService.getAddress(event.getCep());
@@ -68,6 +72,12 @@ public class EventService {
     }
 
     public void deleteEvent(String id) {
+        CheckTicketsResponse response = ticketClient.checkTicketsByEvent(id);
+
+        if (response.isHasTickets()) {
+            throw new EventHasTicketsException("Evento possui ingressos vendidos");
+        }
+
         eventRepository.deleteById(id);
     }
 
