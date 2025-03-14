@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class TicketRequestDto {
+public class TicketUpdateRequestDto {
     @NotBlank(message = "O nome do cliente é obrigatório")
     private String customerName;
 
@@ -15,9 +15,6 @@ public class TicketRequestDto {
     @Email(message = "E-mail inválido")
     @NotBlank(message = "O e-mail do cliente é obrigatório")
     private String customerMail;
-
-    @NotBlank(message = "O id do evento é obrigatório")
-    private String eventId;
 
     @NotBlank(message = "O valor é obrigatório")
     private String brlAmount;
